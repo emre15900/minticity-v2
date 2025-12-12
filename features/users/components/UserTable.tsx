@@ -119,6 +119,8 @@ export function UserTable({
         title: 'İşlemler',
         key: 'actions',
         lockVisibility: true,
+        fixed: 'right',
+        width: 137,
         render: (_, record) => {
           const deleting = deletingIds.includes(record.id);
           return (
