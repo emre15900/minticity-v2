@@ -14,6 +14,7 @@ import { UserPreviewModal } from '@/features/users/components/UserPreviewModal';
 import { UserCreateModal } from '@/features/users/components/UserCreateModal';
 import { UserEditModal } from '@/features/users/components/UserEditModal';
 import { mapFormValuesToPayload } from '@/features/users/models/userMapper';
+import { PageSkeleton } from '@/components/common/PageSkeleton';
 import {
   User,
   UserFormValues,
@@ -139,6 +140,8 @@ export function UsersPage() {
     setEditUser(user);
   };
 
+  const isInitialLoading = loading && !list.length;
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-4 p-6 md:p-10">
       <motion.div
@@ -167,13 +170,13 @@ export function UsersPage() {
           mode={mode}
           onModeChange={setMode}
           onOpenCreate={() => setCreateOpen(true)}
-        onResetFilters={() => {
-          setSearch('');
-          setMode('pagination');
-          setPage(1);
-          setPageSize(PAGE_SIZE_DEFAULT);
-          reset();
-        }}
+          onResetFilters={() => {
+            setSearch('');
+            setMode('pagination');
+            setPage(1);
+            setPageSize(PAGE_SIZE_DEFAULT);
+            reset();
+          }}
         />
 
         {error && (
@@ -187,55 +190,47 @@ export function UsersPage() {
         )}
 
         <div className="mt-4">
-          {isMobile ? (
+          {isInitialLoading ? (
+            <Skeleton active paragraph={{ rows: 10 }} />
+          ) : isMobile ? (
             <>
-              {loading && !list.length ? (
-                <Skeleton active paragraph={{ rows: 8 }} />
-              ) : (
-                <>
-                  <MobileUserList
-                    users={dataForView}
-                    deletingIds={deletingIds}
-                    onPreview={handlePreview}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onDetail={handleDetail}
-                  />
-                  {mode === 'infinite' && (
-                    <div className="mt-3 flex flex-col items-center gap-2">
-                      {loadingMore && <Skeleton active paragraph={{ rows: 1 }} />}
-                      {hasMore ? (
-                        <div ref={loadMoreRef} className="h-10" />
-                      ) : (
-                        <Typography.Text type="secondary">
-                          Liste sonuna ulaşıldı
-                        </Typography.Text>
-                      )}
-                    </div>
+              <MobileUserList
+                users={dataForView}
+                deletingIds={deletingIds}
+                onPreview={handlePreview}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDetail={handleDetail}
+              />
+              {mode === 'infinite' && (
+                <div className="mt-3 flex flex-col items-center gap-2">
+                  {loadingMore && <Skeleton active paragraph={{ rows: 1 }} />}
+                  {hasMore ? (
+                    <div ref={loadMoreRef} className="h-10" />
+                  ) : (
+                    <Typography.Text type="secondary">
+                      Liste sonuna ulaşıldı
+                    </Typography.Text>
                   )}
-                </>
+                </div>
               )}
             </>
           ) : (
             <>
-              {loading && !list.length ? (
-                <Skeleton active paragraph={{ rows: 10 }} />
-              ) : (
-                <UserTable
-                  users={dataForView}
-                  loading={loading}
-                  deletingIds={deletingIds}
-                  pagination={paginationConfig}
-                  onChange={(pagination) => {
-                    if (pagination.current) setPage(pagination.current);
-                    if (pagination.pageSize) setPageSize(pagination.pageSize);
-                  }}
-                  onPreview={handlePreview}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onDetail={handleDetail}
-                />
-              )}
+              <UserTable
+                users={dataForView}
+                loading={loading}
+                deletingIds={deletingIds}
+                pagination={paginationConfig}
+                onChange={(pagination) => {
+                  if (pagination.current) setPage(pagination.current);
+                  if (pagination.pageSize) setPageSize(pagination.pageSize);
+                }}
+                onPreview={handlePreview}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDetail={handleDetail}
+              />
             </>
           )}
           {mode === 'infinite' && !isMobile && (

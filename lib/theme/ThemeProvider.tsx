@@ -27,6 +27,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.dataset.theme = theme;
     root.classList.toggle('dark', theme === 'dark');
     localStorage.setItem(STORAGE_KEY, theme);
+    root.style.colorScheme = theme;
   }, [theme]);
 
   const value = useMemo(

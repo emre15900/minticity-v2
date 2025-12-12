@@ -44,13 +44,16 @@ export default function RootLayout({
   `;
 
   return (
-    <html lang="tr">
+    <html lang="tr" suppressHydrationWarning className="light" data-theme="light">
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
