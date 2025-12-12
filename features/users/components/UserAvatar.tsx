@@ -36,10 +36,12 @@ export function UserAvatar({ name, avatarUrl }: Props) {
       .toUpperCase() || '?';
 
   const backgroundColor = pickColor(name);
+  const safeSrc =
+    avatarUrl && avatarUrl.trim().length > 0 ? avatarUrl : undefined;
 
   return (
     <Avatar
-      src={avatarUrl}
+      src={safeSrc}
       style={{
         backgroundColor,
         color: '#fff',

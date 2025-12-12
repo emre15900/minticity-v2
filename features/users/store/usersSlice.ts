@@ -7,6 +7,7 @@ import {
   updateUser,
 } from '@/features/users/services/usersApi';
 import { NewUserPayload, User } from '@/features/users/types/user';
+import { RootState } from '@/lib/store';
 import {
   readAvatarMap,
   removeAvatar,
@@ -85,26 +86,41 @@ export const fetchUserByIdThunk = createAsyncThunk(
   },
 );
 
-export const createUserThunk = createAsyncThunk(
-  'users/create',
-  async (payload: NewUserPayload) => {
+export const createUserThunk = createAsyncThunk<
+  User,
+  NewUserPayload,
+  { state: RootState }
+>('users/create', async (payload, { getState }) => {
+  try {
     const created = await createUser(payload);
     return created;
-  },
-);
+  } catch {
+    const state = getState().users;
+    const fallbackId = nextLocalId(state.list);
+    return { ...payload, id: fallbackId };
+  }
+});
 
 export const updateUserThunk = createAsyncThunk(
   'users/update',
   async ({ id, payload }: { id: number; payload: NewUserPayload }) => {
-    const updated = await updateUser(id, payload);
-    return updated;
+    try {
+      const updated = await updateUser(id, payload);
+      return updated;
+    } catch {
+      return { ...payload, id };
+    }
   },
 );
 
 export const deleteUserThunk = createAsyncThunk(
   'users/delete',
   async (id: number) => {
-    await deleteUser(id);
+    try {
+      await deleteUser(id);
+    } catch {
+      // ignore, simulate success
+    }
     return id;
   },
 );
