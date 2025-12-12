@@ -22,7 +22,7 @@ export function UserEditModal({ open, user, submitting, onSubmit, onClose }: Pro
       title="Kullanıcı Güncelle"
       onCancel={onClose}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
       width={720}
     >
       <UserForm

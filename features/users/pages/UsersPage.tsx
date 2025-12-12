@@ -167,6 +167,13 @@ export function UsersPage() {
           mode={mode}
           onModeChange={setMode}
           onOpenCreate={() => setCreateOpen(true)}
+        onResetFilters={() => {
+          setSearch('');
+          setMode('pagination');
+          setPage(1);
+          setPageSize(PAGE_SIZE_DEFAULT);
+          reset();
+        }}
         />
 
         {error && (
@@ -182,8 +189,8 @@ export function UsersPage() {
         <div className="mt-4">
           {isMobile ? (
             <>
-              {loading ? (
-                <Skeleton active paragraph={{ rows: 6 }} />
+              {loading && !list.length ? (
+                <Skeleton active paragraph={{ rows: 8 }} />
               ) : (
                 <>
                   <MobileUserList
@@ -210,21 +217,26 @@ export function UsersPage() {
               )}
             </>
           ) : (
-            <UserTable
-              users={dataForView}
-              loading={loading}
-              deletingIds={deletingIds}
-              pagination={paginationConfig}
-              onChange={(pagination) => {
-                if (pagination.current) setPage(pagination.current);
-                if (pagination.pageSize) setPageSize(pagination.pageSize);
-              }}
-              onRefresh={refresh}
-              onPreview={handlePreview}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onDetail={handleDetail}
-            />
+            <>
+              {loading && !list.length ? (
+                <Skeleton active paragraph={{ rows: 10 }} />
+              ) : (
+                <UserTable
+                  users={dataForView}
+                  loading={loading}
+                  deletingIds={deletingIds}
+                  pagination={paginationConfig}
+                  onChange={(pagination) => {
+                    if (pagination.current) setPage(pagination.current);
+                    if (pagination.pageSize) setPageSize(pagination.pageSize);
+                  }}
+                  onPreview={handlePreview}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onDetail={handleDetail}
+                />
+              )}
+            </>
           )}
           {mode === 'infinite' && !isMobile && (
             <div className="mt-3 flex flex-col items-center gap-2">

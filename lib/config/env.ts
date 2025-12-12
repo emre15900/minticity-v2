@@ -1,7 +1,12 @@
+const DEFAULT_API_BASE = 'https://jsonplaceholder.typicode.com';
+
 function getEnv(key: 'NEXT_PUBLIC_API_BASE') {
   const value = process.env[key];
   if (!value) {
-    throw new Error(`Env değişkeni eksik: ${key}`);
+    console.warn(
+      `[env] ${key} bulunamadı, DEFAULT_API_BASE kullanılacak: ${DEFAULT_API_BASE}`,
+    );
+    return DEFAULT_API_BASE;
   }
   return value;
 }
