@@ -1,29 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Row,
-  Space,
-  Upload,
-  message,
-} from 'antd';
-import {
-  FiAtSign,
-  FiGlobe,
-  FiPhone,
-  FiUser,
-  FiUsers,
-  FiImage,
-} from 'react-icons/fi';
+import { Button, Card, Col, Form, Input, Row, Space } from 'antd';
+import { FiAtSign, FiGlobe, FiPhone, FiUser, FiUsers } from 'react-icons/fi';
+import { UserAvatarUpload } from '@/features/users/components/UserAvatarUpload';
 import { UserFormValues } from '@/features/users/types/user';
 
 const validationSchema = Yup.object().shape({
@@ -35,7 +17,7 @@ const validationSchema = Yup.object().shape({
   phone: Yup.string().min(7, 'Geçerli telefon girin').required('Telefon gerekli'),
   companyName: Yup.string().required('Şirket adı gerekli'),
   website: Yup.string().url('Geçerli URL girin').notRequired(),
-  avatarUrl: Yup.string().url('Geçerli URL girin').notRequired(),
+  avatarUrl: Yup.string().notRequired(),
 });
 
 type UserFormProps = {
@@ -85,6 +67,7 @@ export function UserForm({
           touched,
           isSubmitting,
           dirty,
+          setFieldValue,
         }) => {
           return (
             <Form layout="vertical" onFinish={handleSubmit as any}>
@@ -92,44 +75,12 @@ export function UserForm({
               <Row gutter={16}>
                 <Col span={24}>
                   <Form.Item label="Avatar">
-                    <Space align="center" size="large">
-                      <Avatar
-                        size={64}
-                        src={values.avatarUrl || undefined}
-                        icon={<FiUser />}
-                      />
-                      <Upload
-                        accept="image/*"
-                        showUploadList={false}
-                        beforeUpload={(file) => {
-                          const isValid =
-                            file.type.startsWith('image/') &&
-                            file.size / 1024 / 1024 < 5;
-                          if (!isValid) {
-                            message.error('5MB altında bir görsel yükleyin.');
-                            return Upload.LIST_IGNORE;
-                          }
-                          const reader = new FileReader();
-                          reader.onload = () => {
-                            const base64 = reader.result as string;
-                            setFieldValue('avatarUrl', base64);
-                          };
-                          reader.readAsDataURL(file);
-                          return false;
-                        }}
-                      >
-                        <Button icon={<FiImage />}>Görsel Yükle</Button>
-                      </Upload>
-                      {values.avatarUrl && (
-                        <Button
-                          danger
-                          type="link"
-                          onClick={() => setFieldValue('avatarUrl', '')}
-                        >
-                          Kaldır
-                        </Button>
-                      )}
-                    </Space>
+                    <UserAvatarUpload
+                      value={values.avatarUrl}
+                      onChange={(dataUrl) =>
+                        setFieldValue('avatarUrl', dataUrl ?? '')
+                      }
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -254,31 +205,6 @@ export function UserForm({
                       prefix={<FiUsers />}
                       placeholder="Şirket adı"
                       value={values.companyName}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Row gutter={16}>
-                <Col xs={24} md={12}>
-                  <Form.Item
-                    label="Avatar URL"
-                    validateStatus={
-                      touched.avatarUrl && errors.avatarUrl ? 'error' : ''
-                    }
-                    help={
-                      touched.avatarUrl && errors.avatarUrl
-                        ? errors.avatarUrl
-                        : undefined
-                    }
-                  >
-                    <Input
-                      name="avatarUrl"
-                      prefix={<FiImage />}
-                      placeholder="https://..."
-                      value={values.avatarUrl}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
