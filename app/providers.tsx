@@ -2,9 +2,10 @@
 
 import { ConfigProvider, App as AntdApp, theme as antdTheme } from 'antd';
 import { Provider } from 'react-redux';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, useState, useEffect } from 'react';
 import { store } from '@/lib/store';
 import { ThemeProvider, useTheme } from '@/lib/theme/ThemeProvider';
+import { AppLoader } from '@/components/common/AppLoader';
 
 type ProvidersProps = {
   children: ReactNode;
@@ -12,6 +13,11 @@ type ProvidersProps = {
 
 function AntThemeWrapper({ children }: { children: ReactNode }) {
   const { theme } = useTheme();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
   const customTheme = useMemo(
     () => ({
@@ -27,7 +33,7 @@ function AntThemeWrapper({ children }: { children: ReactNode }) {
 
   return (
     <ConfigProvider theme={customTheme}>
-      <AntdApp>{children}</AntdApp>
+      <AntdApp>{ready ? children : <AppLoader />}</AntdApp>
     </ConfigProvider>
   );
 }
