@@ -1,9 +1,21 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, Card, Col, Form, Input, Row, Space } from 'antd';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Space,
+  Upload,
+  message,
+} from 'antd';
 import {
   FiAtSign,
   FiGlobe,
@@ -77,6 +89,50 @@ export function UserForm({
           return (
             <Form layout="vertical" onFinish={handleSubmit as any}>
               <DirtyWatcher dirty={dirty} onDirtyChange={onDirtyChange} />
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item label="Avatar">
+                    <Space align="center" size="large">
+                      <Avatar
+                        size={64}
+                        src={values.avatarUrl || undefined}
+                        icon={<FiUser />}
+                      />
+                      <Upload
+                        accept="image/*"
+                        showUploadList={false}
+                        beforeUpload={(file) => {
+                          const isValid =
+                            file.type.startsWith('image/') &&
+                            file.size / 1024 / 1024 < 5;
+                          if (!isValid) {
+                            message.error('5MB altında bir görsel yükleyin.');
+                            return Upload.LIST_IGNORE;
+                          }
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            const base64 = reader.result as string;
+                            setFieldValue('avatarUrl', base64);
+                          };
+                          reader.readAsDataURL(file);
+                          return false;
+                        }}
+                      >
+                        <Button icon={<FiImage />}>Görsel Yükle</Button>
+                      </Upload>
+                      {values.avatarUrl && (
+                        <Button
+                          danger
+                          type="link"
+                          onClick={() => setFieldValue('avatarUrl', '')}
+                        >
+                          Kaldır
+                        </Button>
+                      )}
+                    </Space>
+                  </Form.Item>
+                </Col>
+              </Row>
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item

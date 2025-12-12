@@ -7,6 +7,12 @@ import {
   updateUser,
 } from '@/features/users/services/usersApi';
 import { NewUserPayload, User } from '@/features/users/types/user';
+import {
+  readAvatarMap,
+  removeAvatar,
+  setAvatar,
+  AvatarMap,
+} from '@/lib/storage/avatarStorage';
 
 export type UsersState = {
   list: User[];
@@ -14,6 +20,7 @@ export type UsersState = {
   creating: boolean;
   updating: boolean;
   deletingIds: number[];
+  avatarMap: AvatarMap;
   error?: string;
 };
 
@@ -23,6 +30,7 @@ const initialState: UsersState = {
   creating: false,
   updating: false,
   deletingIds: [],
+  avatarMap: {},
   error: undefined,
 };
 
@@ -87,7 +95,12 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsersThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload;
+        const map = readAvatarMap();
+        state.avatarMap = map;
+        state.list = action.payload.map((user) => ({
+          ...user,
+          avatarUrl: map[user.id] ?? user.avatarUrl,
+        }));
       })
       .addCase(fetchUsersThunk.rejected, (state, action) => {
         state.loading = false;
@@ -100,13 +113,14 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUserByIdThunk.fulfilled, (state, action) => {
         state.loading = false;
+        const avatarUrl = state.avatarMap[action.payload.id];
         const index = state.list.findIndex(
           (user) => user.id === action.payload.id,
         );
         if (index >= 0) {
-          state.list[index] = action.payload;
+          state.list[index] = { ...action.payload, avatarUrl: avatarUrl ?? action.payload.avatarUrl };
         } else {
-          state.list.push(action.payload);
+          state.list.push({ ...action.payload, avatarUrl: avatarUrl ?? action.payload.avatarUrl });
         }
       })
       .addCase(fetchUserByIdThunk.rejected, (state, action) => {
@@ -120,7 +134,17 @@ const usersSlice = createSlice({
       })
       .addCase(createUserThunk.fulfilled, (state, action) => {
         state.creating = false;
-        state.list = [action.payload, ...state.list];
+        if (action.payload.avatarUrl) {
+          state.avatarMap = setAvatar(action.payload.id, action.payload.avatarUrl);
+        }
+        state.list = [
+          {
+            ...action.payload,
+            avatarUrl:
+              state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
+          },
+          ...state.list,
+        ];
       })
       .addCase(createUserThunk.rejected, (state, action) => {
         state.creating = false;
@@ -133,13 +157,24 @@ const usersSlice = createSlice({
       })
       .addCase(updateUserThunk.fulfilled, (state, action) => {
         state.updating = false;
+        if (action.payload.avatarUrl) {
+          state.avatarMap = setAvatar(action.payload.id, action.payload.avatarUrl);
+        }
         const index = state.list.findIndex(
           (user) => user.id === action.payload.id,
         );
         if (index >= 0) {
-          state.list[index] = action.payload;
+          state.list[index] = {
+            ...action.payload,
+            avatarUrl:
+              state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
+          };
         } else {
-          state.list.push(action.payload);
+          state.list.push({
+            ...action.payload,
+            avatarUrl:
+              state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
+          });
         }
       })
       .addCase(updateUserThunk.rejected, (state, action) => {
@@ -155,6 +190,7 @@ const usersSlice = createSlice({
         state.deletingIds = state.deletingIds.filter(
           (id) => id !== action.payload,
         );
+        state.avatarMap = removeAvatar(action.payload);
         state.list = state.list.filter((user) => user.id !== action.payload);
       })
       .addCase(deleteUserThunk.rejected, (state, action) => {
