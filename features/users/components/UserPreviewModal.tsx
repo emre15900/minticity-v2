@@ -10,8 +10,6 @@ type Props = {
   onClose: () => void;
 };
 
-const labelStyle = { width: 120 };
-
 export function UserPreviewModal({ open, user, onClose }: Props) {
   if (!user) return null;
   const initials =
@@ -33,7 +31,12 @@ export function UserPreviewModal({ open, user, onClose }: Props) {
           <Typography.Text type="secondary">@{user.username || '-'}</Typography.Text>
         </div>
       </Space>
-      <Descriptions column={1} labelStyle={labelStyle} bordered size="small">
+      <Descriptions
+        column={1}
+        styles={{ label: { width: 120 } }}
+        bordered
+        size="small"
+      >
         <Descriptions.Item label="E-posta">
           <Space>
             <FiMail />

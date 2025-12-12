@@ -61,7 +61,7 @@ export function UserDetailPage() {
         <Alert
           type="error"
           showIcon
-          message="Kullanıcı bulunamadı"
+          title="Kullanıcı bulunamadı"
           description={error}
         />
       );
@@ -72,7 +72,7 @@ export function UserDetailPage() {
         <Alert
           type="warning"
           showIcon
-          message="Kullanıcı bulunamadı"
+          title="Kullanıcı bulunamadı"
           description="Bu ID ile kayıtlı kullanıcı yok."
         />
       );
@@ -86,7 +86,7 @@ export function UserDetailPage() {
         onDirtyChange={setDirty}
         footer={
           <Typography.Text type="secondary">
-            Güncelleme işlemi front-end tarafında simüle edilir.
+
           </Typography.Text>
         }
       />
@@ -101,10 +101,10 @@ export function UserDetailPage() {
         transition={{ duration: 0.25 }}
       >
         <Space size="middle" align="center">
-          <Button icon={<FiArrowLeft />} onClick={handleBack} type="text">
-            Listeye dön
-          </Button>
           <div>
+            <Button icon={<FiArrowLeft />} onClick={handleBack} className='border-solid border-1 border-slate-300 rounded-full p-3 mb-2' type="text">
+              Listeye dön
+            </Button>
             <Typography.Title level={2} className="!mb-1">
               Kullanıcı Detayı
             </Typography.Title>

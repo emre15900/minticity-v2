@@ -2,14 +2,13 @@
 
 import { Button, Input, Segmented, Space, Tooltip } from 'antd';
 import {
+  FiFilter,
   FiList,
   FiPlus,
   FiRefreshCw,
   FiShuffle,
   FiSearch,
-  FiXCircle,
 } from 'react-icons/fi';
-import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { UserListMode } from '@/features/users/types/user';
 
 type Props = {
@@ -42,7 +41,7 @@ export function UserFilters({
         placeholder="İsim, kullanıcı adı veya e-posta ara"
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="sm:max-w-xl"
+        className="sm:max-w-xl search-input"
       />
       <Space wrap>
         <Tooltip title="Liste modu">
@@ -79,12 +78,11 @@ export function UserFilters({
         </Tooltip>
         <Tooltip title="Filtreleri temizle">
           <Button
-            icon={<FiXCircle />}
+            icon={<FiFilter />}
             onClick={onResetFilters}
             type="default"
           />
         </Tooltip>
-        <ThemeToggle />
         <Button type="primary" icon={<FiPlus />} onClick={onOpenCreate}>
           Yeni Kullanıcı
         </Button>

@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { message } from 'antd';
+import axios, { AxiosRequestConfig } from 'axios';
 import { getApiBaseUrl } from '@/lib/config/env';
 
 export const apiClient = axios.create({
@@ -22,11 +21,17 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    const cfg = (error?.config ?? {}) as AxiosRequestConfig & {
+      skipErrorLog?: boolean;
+    };
     const msg =
       error?.response?.data?.message ||
       error?.message ||
       'İstek sırasında bir sorun oluştu';
-    message.error(msg);
+    if (process.env.NODE_ENV !== 'production' && !cfg.skipErrorLog) {
+      // eslint-disable-next-line no-console
+      console.error(msg, error);
+    }
     return Promise.reject(error);
   },
 );

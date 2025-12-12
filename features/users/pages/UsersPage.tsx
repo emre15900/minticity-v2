@@ -139,8 +139,11 @@ export function UsersPage() {
     setEditUser(user);
   };
 
+  const isInitialLoading = loading && !list.length;
+
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-4 p-6 md:p-10">
+    <div className="page-shell flex justify-center">
+      <div className="flex w-full max-w-6xl flex-col gap-4 p-2">
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -158,7 +161,7 @@ export function UsersPage() {
         </Space>
       </motion.div>
 
-      <Card className="card-like">
+      <Card className="glass-card">
         <UserFilters
           search={search}
           onSearchChange={setSearch}
@@ -167,75 +170,67 @@ export function UsersPage() {
           mode={mode}
           onModeChange={setMode}
           onOpenCreate={() => setCreateOpen(true)}
-        onResetFilters={() => {
-          setSearch('');
-          setMode('pagination');
-          setPage(1);
-          setPageSize(PAGE_SIZE_DEFAULT);
-          reset();
-        }}
+          onResetFilters={() => {
+            setSearch('');
+            setMode('pagination');
+            setPage(1);
+            setPageSize(PAGE_SIZE_DEFAULT);
+            reset();
+          }}
         />
 
         {error && (
           <Alert
             className="mt-3"
             type="error"
-            message="Veri çekilirken bir sorun oluştu."
+            title="Veri çekilirken bir sorun oluştu."
             description={error}
             showIcon
           />
         )}
 
         <div className="mt-4">
-          {isMobile ? (
+          {isInitialLoading ? (
+            <Skeleton active paragraph={{ rows: 10 }} />
+          ) : isMobile ? (
             <>
-              {loading && !list.length ? (
-                <Skeleton active paragraph={{ rows: 8 }} />
-              ) : (
-                <>
-                  <MobileUserList
-                    users={dataForView}
-                    deletingIds={deletingIds}
-                    onPreview={handlePreview}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onDetail={handleDetail}
-                  />
-                  {mode === 'infinite' && (
-                    <div className="mt-3 flex flex-col items-center gap-2">
-                      {loadingMore && <Skeleton active paragraph={{ rows: 1 }} />}
-                      {hasMore ? (
-                        <div ref={loadMoreRef} className="h-10" />
-                      ) : (
-                        <Typography.Text type="secondary">
-                          Liste sonuna ulaşıldı
-                        </Typography.Text>
-                      )}
-                    </div>
+              <MobileUserList
+                users={dataForView}
+                deletingIds={deletingIds}
+                onPreview={handlePreview}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDetail={handleDetail}
+              />
+              {mode === 'infinite' && (
+                <div className="mt-3 flex flex-col items-center gap-2">
+                  {loadingMore && <Skeleton active paragraph={{ rows: 1 }} />}
+                  {hasMore ? (
+                    <div ref={loadMoreRef} className="h-10" />
+                  ) : (
+                    <Typography.Text type="secondary">
+                      Liste sonuna ulaşıldı
+                    </Typography.Text>
                   )}
-                </>
+                </div>
               )}
             </>
           ) : (
             <>
-              {loading && !list.length ? (
-                <Skeleton active paragraph={{ rows: 10 }} />
-              ) : (
-                <UserTable
-                  users={dataForView}
-                  loading={loading}
-                  deletingIds={deletingIds}
-                  pagination={paginationConfig}
-                  onChange={(pagination) => {
-                    if (pagination.current) setPage(pagination.current);
-                    if (pagination.pageSize) setPageSize(pagination.pageSize);
-                  }}
-                  onPreview={handlePreview}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onDetail={handleDetail}
-                />
-              )}
+              <UserTable
+                users={dataForView}
+                loading={loading}
+                deletingIds={deletingIds}
+                pagination={paginationConfig}
+                onChange={(pagination) => {
+                  if (pagination.current) setPage(pagination.current);
+                  if (pagination.pageSize) setPageSize(pagination.pageSize);
+                }}
+                onPreview={handlePreview}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDetail={handleDetail}
+              />
             </>
           )}
           {mode === 'infinite' && !isMobile && (
@@ -273,6 +268,7 @@ export function UsersPage() {
         onSubmit={handleUpdate}
         onClose={() => setEditUser(undefined)}
       />
+      </div>
     </div>
   );
 }
