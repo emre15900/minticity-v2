@@ -61,7 +61,7 @@ export function UserDetailPage() {
         <Alert
           type="error"
           showIcon
-          message="Kullanıcı bulunamadı"
+          title="Kullanıcı bulunamadı"
           description={error}
         />
       );
@@ -72,7 +72,7 @@ export function UserDetailPage() {
         <Alert
           type="warning"
           showIcon
-          message="Kullanıcı bulunamadı"
+          title="Kullanıcı bulunamadı"
           description="Bu ID ile kayıtlı kullanıcı yok."
         />
       );

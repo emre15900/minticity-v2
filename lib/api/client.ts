@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { message } from 'antd';
 import { getApiBaseUrl } from '@/lib/config/env';
 
 export const apiClient = axios.create({
@@ -26,7 +25,10 @@ apiClient.interceptors.response.use(
       error?.response?.data?.message ||
       error?.message ||
       'İstek sırasında bir sorun oluştu';
-    message.error(msg);
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.error(msg, error);
+    }
     return Promise.reject(error);
   },
 );

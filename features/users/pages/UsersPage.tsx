@@ -182,7 +182,7 @@ export function UsersPage() {
           <Alert
             className="mt-3"
             type="error"
-            message="Veri çekilirken bir sorun oluştu."
+            title="Veri çekilirken bir sorun oluştu."
             description={error}
             showIcon
           />
