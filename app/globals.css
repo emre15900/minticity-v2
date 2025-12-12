@@ -5,14 +5,35 @@
 :root {
   --background: #f5f7fb;
   --foreground: #0f172a;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --background: #0b1221;
+  --foreground: #e2e8f0;
+  --card: #0f172a;
+  --border: #1e293b;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 a {
   color: inherit;
+}
+
+.card-like {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 14px;
 }

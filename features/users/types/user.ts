@@ -20,6 +20,7 @@ export type User = {
   website?: string;
   address?: UserAddress;
   company?: UserCompany;
+  avatarUrl?: string;
 };
 
 export type NewUserPayload = Omit<User, 'id'>;
@@ -31,5 +32,9 @@ export type UserFormValues = {
   phone: string;
   companyName: string;
   website?: string;
+  avatarUrl?: string;
 };
+
+export type UserListMode = 'pagination' | 'infinite';
+export type TableDensity = 'default' | 'middle' | 'small';
 
