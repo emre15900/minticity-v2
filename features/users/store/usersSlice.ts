@@ -4,13 +4,15 @@ import {
   deleteUser,
   fetchUserById,
   fetchUsers,
-} from '@/lib/api/users';
-import { NewUserPayload, User } from '@/lib/types/users';
+  updateUser,
+} from '@/features/users/services/usersApi';
+import { NewUserPayload, User } from '@/features/users/types/user';
 
 export type UsersState = {
   list: User[];
   loading: boolean;
   creating: boolean;
+  updating: boolean;
   deletingIds: number[];
   error?: string;
 };
@@ -19,6 +21,7 @@ const initialState: UsersState = {
   list: [],
   loading: false,
   creating: false,
+  updating: false,
   deletingIds: [],
   error: undefined,
 };
@@ -28,6 +31,14 @@ export const fetchUsersThunk = createAsyncThunk('users/fetch', async () => {
   return users;
 });
 
+export const fetchUserByIdThunk = createAsyncThunk(
+  'users/fetchById',
+  async (id: number) => {
+    const user = await fetchUserById(id);
+    return user;
+  },
+);
+
 export const createUserThunk = createAsyncThunk(
   'users/create',
   async (payload: NewUserPayload) => {
@@ -36,19 +47,19 @@ export const createUserThunk = createAsyncThunk(
   },
 );
 
+export const updateUserThunk = createAsyncThunk(
+  'users/update',
+  async ({ id, payload }: { id: number; payload: NewUserPayload }) => {
+    const updated = await updateUser(id, payload);
+    return updated;
+  },
+);
+
 export const deleteUserThunk = createAsyncThunk(
   'users/delete',
   async (id: number) => {
     await deleteUser(id);
     return id;
-  },
-);
-
-export const fetchUserByIdThunk = createAsyncThunk(
-  'users/fetchById',
-  async (id: number) => {
-    const user = await fetchUserById(id);
-    return user;
   },
 );
 
@@ -83,6 +94,26 @@ const usersSlice = createSlice({
         state.error =
           action.error.message || 'Kullanıcılar getirilirken bir hata oluştu.';
       })
+      .addCase(fetchUserByIdThunk.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(fetchUserByIdThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.list.findIndex(
+          (user) => user.id === action.payload.id,
+        );
+        if (index >= 0) {
+          state.list[index] = action.payload;
+        } else {
+          state.list.push(action.payload);
+        }
+      })
+      .addCase(fetchUserByIdThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || 'Kullanıcı detayı getirilirken hata oluştu.';
+      })
       .addCase(createUserThunk.pending, (state) => {
         state.creating = true;
         state.error = undefined;
@@ -95,6 +126,26 @@ const usersSlice = createSlice({
         state.creating = false;
         state.error =
           action.error.message || 'Kullanıcı oluşturulurken bir hata oluştu.';
+      })
+      .addCase(updateUserThunk.pending, (state) => {
+        state.updating = true;
+        state.error = undefined;
+      })
+      .addCase(updateUserThunk.fulfilled, (state, action) => {
+        state.updating = false;
+        const index = state.list.findIndex(
+          (user) => user.id === action.payload.id,
+        );
+        if (index >= 0) {
+          state.list[index] = action.payload;
+        } else {
+          state.list.push(action.payload);
+        }
+      })
+      .addCase(updateUserThunk.rejected, (state, action) => {
+        state.updating = false;
+        state.error =
+          action.error.message || 'Kullanıcı güncellenirken bir hata oluştu.';
       })
       .addCase(deleteUserThunk.pending, (state, action) => {
         state.deletingIds.push(action.meta.arg);
@@ -112,26 +163,6 @@ const usersSlice = createSlice({
         );
         state.error =
           action.error.message || 'Kullanıcı silinirken bir hata oluştu.';
-      })
-      .addCase(fetchUserByIdThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        const existingIndex = state.list.findIndex(
-          (user) => user.id === action.payload.id,
-        );
-        if (existingIndex !== -1) {
-          state.list[existingIndex] = action.payload;
-        } else {
-          state.list.push(action.payload);
-        }
-      })
-      .addCase(fetchUserByIdThunk.pending, (state) => {
-        state.loading = true;
-        state.error = undefined;
-      })
-      .addCase(fetchUserByIdThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error =
-          action.error.message || 'Kullanıcı detayı getirilirken hata oluştu.';
       });
   },
 });

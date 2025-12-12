@@ -1,4 +1,4 @@
-import { NewUserPayload, User, UserFormValues } from '@/lib/types/users';
+import { NewUserPayload, User, UserFormValues } from '@/features/users/types/user';
 
 export function mapUserToFormValues(user?: User): UserFormValues {
   return {
@@ -8,6 +8,7 @@ export function mapUserToFormValues(user?: User): UserFormValues {
     phone: user?.phone ?? '',
     website: user?.website ?? '',
     companyName: user?.company?.name ?? '',
+    avatarUrl: user?.avatarUrl ?? '',
   };
 }
 
@@ -18,6 +19,7 @@ export function mapFormValuesToPayload(values: UserFormValues): NewUserPayload {
     email: values.email.trim(),
     phone: values.phone.trim(),
     website: values.website?.trim(),
+    avatarUrl: values.avatarUrl?.trim(),
     company: values.companyName
       ? { name: values.companyName.trim() }
       : undefined,
