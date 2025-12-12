@@ -13,6 +13,11 @@ import {
   setAvatar,
   AvatarMap,
 } from '@/lib/storage/avatarStorage';
+import {
+  readLocalUsers,
+  removeLocalUser,
+  upsertLocalUser,
+} from '@/lib/storage/userStorage';
 
 export type UsersState = {
   list: User[];
@@ -42,6 +47,8 @@ export const fetchUsersThunk = createAsyncThunk('users/fetch', async () => {
 export const fetchUserByIdThunk = createAsyncThunk(
   'users/fetchById',
   async (id: number) => {
+    const local = readLocalUsers().find((user) => user.id === id);
+    if (local) return local;
     const user = await fetchUserById(id);
     return user;
   },
@@ -97,7 +104,13 @@ const usersSlice = createSlice({
         state.loading = false;
         const map = readAvatarMap();
         state.avatarMap = map;
-        state.list = action.payload.map((user) => ({
+        const localUsers = readLocalUsers();
+        const localById = new Map(localUsers.map((user) => [user.id, user]));
+        const merged = [
+          ...localUsers,
+          ...action.payload.filter((user) => !localById.has(user.id)),
+        ];
+        state.list = merged.map((user) => ({
           ...user,
           avatarUrl: map[user.id] ?? user.avatarUrl,
         }));
@@ -137,14 +150,19 @@ const usersSlice = createSlice({
         if (action.payload.avatarUrl) {
           state.avatarMap = setAvatar(action.payload.id, action.payload.avatarUrl);
         }
-        state.list = [
-          {
-            ...action.payload,
-            avatarUrl:
-              state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
-          },
-          ...state.list,
-        ];
+        const userWithAvatar = {
+          ...action.payload,
+          avatarUrl: state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
+        };
+        const existingIndex = state.list.findIndex(
+          (user) => user.id === userWithAvatar.id,
+        );
+        if (existingIndex >= 0) {
+          state.list[existingIndex] = userWithAvatar;
+        } else {
+          state.list = [userWithAvatar, ...state.list];
+        }
+        upsertLocalUser(userWithAvatar);
       })
       .addCase(createUserThunk.rejected, (state, action) => {
         state.creating = false;
@@ -160,21 +178,21 @@ const usersSlice = createSlice({
         if (action.payload.avatarUrl) {
           state.avatarMap = setAvatar(action.payload.id, action.payload.avatarUrl);
         }
+        const userWithAvatar = {
+          ...action.payload,
+          avatarUrl: state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
+        };
         const index = state.list.findIndex(
-          (user) => user.id === action.payload.id,
+          (user) => user.id === userWithAvatar.id,
         );
         if (index >= 0) {
-          state.list[index] = {
-            ...action.payload,
-            avatarUrl:
-              state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
-          };
+          state.list[index] = userWithAvatar;
         } else {
-          state.list.push({
-            ...action.payload,
-            avatarUrl:
-              state.avatarMap[action.payload.id] ?? action.payload.avatarUrl,
-          });
+          state.list.push(userWithAvatar);
+        }
+        const locals = readLocalUsers();
+        if (locals.some((user) => user.id === userWithAvatar.id)) {
+          upsertLocalUser(userWithAvatar);
         }
       })
       .addCase(updateUserThunk.rejected, (state, action) => {
@@ -192,6 +210,7 @@ const usersSlice = createSlice({
         );
         state.avatarMap = removeAvatar(action.payload);
         state.list = state.list.filter((user) => user.id !== action.payload);
+        removeLocalUser(action.payload);
       })
       .addCase(deleteUserThunk.rejected, (state, action) => {
         state.deletingIds = state.deletingIds.filter(

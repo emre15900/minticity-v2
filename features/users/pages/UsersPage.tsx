@@ -14,7 +14,6 @@ import { UserPreviewModal } from '@/features/users/components/UserPreviewModal';
 import { UserCreateModal } from '@/features/users/components/UserCreateModal';
 import { UserEditModal } from '@/features/users/components/UserEditModal';
 import { mapFormValuesToPayload } from '@/features/users/models/userMapper';
-import { PageSkeleton } from '@/components/common/PageSkeleton';
 import {
   User,
   UserFormValues,

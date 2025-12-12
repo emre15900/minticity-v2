@@ -86,7 +86,7 @@ export function UserDetailPage() {
         onDirtyChange={setDirty}
         footer={
           <Typography.Text type="secondary">
-            Güncelleme işlemi front-end tarafında simüle edilir.
+           
           </Typography.Text>
         }
       />
