@@ -4,6 +4,8 @@ import Script from 'next/script';
 import 'antd/dist/reset.css';
 import './globals.css';
 import { Providers } from '@/app/providers';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { Space } from 'antd';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -54,7 +56,16 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="mx-auto flex max-w-6xl flex-col gap-4 pt-4 pr-10">
+            <Space align="center" className="justify-end w-full" wrap>
+              <div>
+                <ThemeToggle />
+              </div>
+            </Space>
+          </div>
+          {children}
+        </Providers>
       </body>
     </html>
   );
