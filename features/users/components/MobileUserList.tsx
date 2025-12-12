@@ -22,11 +22,11 @@ export function MobileUserList({
   onDelete,
   onDetail,
 }: Props) {
-  return (
-    <Collapse accordion>
-      {users.map((user) => (
-        <Collapse.Panel
-          header={
+  const items =
+    users.length > 0
+      ? users.map((user) => ({
+          key: `${user.id}`,
+          label: (
             <Space align="center">
               <UserAvatar name={user.name} avatarUrl={user.avatarUrl} />
               <div>
@@ -39,73 +39,75 @@ export function MobileUserList({
               </div>
               {user.company?.name && <Tag color="blue">{user.company.name}</Tag>}
             </Space>
-          }
-          key={`${user.id}`}
-        >
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <span>E-posta</span>
-              <a href={`mailto:${user.email}`}>{user.email || '-'}</a>
+          ),
+          children: (
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span>E-posta</span>
+                <a href={`mailto:${user.email}`}>{user.email || '-'}</a>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Telefon</span>
+                <a href={`tel:${user.phone}`}>{user.phone || '-'}</a>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Şirket</span>
+                <span>{user.company?.name || '-'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Website</span>
+                {user.website ? (
+                  <a href={`https://${user.website}`} target="_blank" rel="noreferrer">
+                    {user.website}
+                  </a>
+                ) : (
+                  '-'
+                )}
+              </div>
+              <Space wrap>
+                <Button
+                  size="small"
+                  icon={<FiEye />}
+                  onClick={() => onPreview(user)}
+                >
+                  Önizleme
+                </Button>
+                <Button
+                  size="small"
+                  icon={<FiEdit2 />}
+                  onClick={() => onEdit(user)}
+                >
+                  Düzenle
+                </Button>
+                <Button
+                  size="small"
+                  icon={<FiExternalLink />}
+                  onClick={() => onDetail(user)}
+                >
+                  Detay
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  loading={deletingIds.includes(user.id)}
+                  icon={<FiTrash2 />}
+                  onClick={() => onDelete(user)}
+                >
+                  Sil
+                </Button>
+              </Space>
             </div>
-            <div className="flex items-center justify-between">
-              <span>Telefon</span>
-              <a href={`tel:${user.phone}`}>{user.phone || '-'}</a>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Şirket</span>
-              <span>{user.company?.name || '-'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Website</span>
-              {user.website ? (
-                <a href={`https://${user.website}`} target="_blank" rel="noreferrer">
-                  {user.website}
-                </a>
-              ) : (
-                '-'
-              )}
-            </div>
-            <Space wrap>
-              <Button
-                size="small"
-                icon={<FiEye />}
-                onClick={() => onPreview(user)}
-              >
-                Önizleme
-              </Button>
-              <Button
-                size="small"
-                icon={<FiEdit2 />}
-                onClick={() => onEdit(user)}
-              >
-                Düzenle
-              </Button>
-              <Button
-                size="small"
-                icon={<FiExternalLink />}
-                onClick={() => onDetail(user)}
-              >
-                Detay
-              </Button>
-              <Button
-                size="small"
-                danger
-                loading={deletingIds.includes(user.id)}
-                icon={<FiTrash2 />}
-                onClick={() => onDelete(user)}
-              >
-                Sil
-              </Button>
-            </Space>
-          </div>
-        </Collapse.Panel>
-      ))}
-      {!users.length && (
-        <Collapse.Panel header="Kayıt yok" key="empty" disabled>
-          <Badge status="default" text="Kullanıcı bulunamadı" />
-        </Collapse.Panel>
-      )}
-    </Collapse>
-  );
+          ),
+        }))
+      : [
+          {
+            key: 'empty',
+            label: 'Kayıt yok',
+            children: <Badge status="default" text="Kullanıcı bulunamadı" />,
+            collapsible: 'disabled' as const,
+          },
+        ];
+
+  return <Collapse accordion items={items} />;
 }
 

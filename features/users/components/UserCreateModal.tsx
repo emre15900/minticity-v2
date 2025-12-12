@@ -19,7 +19,7 @@ export function UserCreateModal({ open, submitting, onSubmit, onClose }: Props) 
       title="Yeni Kullanıcı Ekle"
       onCancel={onClose}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
       width={720}
     >
       <UserForm
