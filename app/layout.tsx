@@ -47,7 +47,7 @@ export default function RootLayout({
 
   return (
     <html lang="tr" suppressHydrationWarning className="light" data-theme="light">
-      <head>
+      <head suppressHydrationWarning>
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
