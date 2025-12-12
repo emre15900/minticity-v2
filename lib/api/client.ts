@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { getApiBaseUrl } from '@/lib/config/env';
 
 export const apiClient = axios.create({
@@ -21,11 +21,14 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    const cfg = (error?.config ?? {}) as AxiosRequestConfig & {
+      skipErrorLog?: boolean;
+    };
     const msg =
       error?.response?.data?.message ||
       error?.message ||
       'İstek sırasında bir sorun oluştu';
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' && !cfg.skipErrorLog) {
       // eslint-disable-next-line no-console
       console.error(msg, error);
     }

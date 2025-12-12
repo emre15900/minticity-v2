@@ -22,7 +22,9 @@ export async function updateUser(
   id: number,
   payload: NewUserPayload,
 ): Promise<User> {
-  const response = await apiClient.put<User>(`/users/${id}`, payload);
+  const response = await apiClient.put<User>(`/users/${id}`, payload, {
+    skipErrorLog: true,
+  } as any);
   return { ...payload, id: response.data?.id ?? id };
 }
 
