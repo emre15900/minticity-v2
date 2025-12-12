@@ -1,7 +1,15 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Button, Popconfirm, Space, Tag, Tooltip, Typography } from 'antd';
+import {
+  Button,
+  Input,
+  Popconfirm,
+  Space,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
 import { TablePaginationConfig, TableProps } from 'antd/es/table';
 import {
   FiEdit2,
@@ -45,6 +53,47 @@ export function UserTable({
     [users],
   );
 
+  const emailDomainFilters = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          users
+            .map((u) => u.email)
+            .filter(Boolean)
+            .map((email) => email.split('@')[1])
+            .filter(Boolean) as string[],
+        ),
+      ).map((domain) => ({ text: domain, value: domain })),
+    [users],
+  );
+
+  const companyNameFilters = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          users
+            .map((u) => u.company?.name)
+            .filter(Boolean)
+            .map((name) => name as string),
+        ),
+      ).map((name) => ({ text: name, value: name })),
+    [users],
+  );
+
+  const websiteDomainFilters = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          users
+            .map((u) => u.website)
+            .filter(Boolean)
+            .map((site) => site?.replace(/^https?:\/\//, ''))
+            .filter(Boolean) as string[],
+        ),
+      ).map((domain) => ({ text: domain, value: domain })),
+    [users],
+  );
+
   const columns: DynamicColumn<User>[] = useMemo(
     () => [
       {
@@ -70,12 +119,39 @@ export function UserTable({
         id: 'email',
         title: 'E-posta',
         dataIndex: 'email',
-        filters: [
-          { text: 'gmail', value: 'gmail' },
-          { text: 'yahoo', value: 'yahoo' },
-        ],
+        filters: emailDomainFilters,
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div className="p-2 w-64">
+            <Input
+              allowClear
+              placeholder="E-posta ara veya domain"
+              value={selectedKeys[0] as string}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedKeys(val ? [val] : []);
+              }}
+              onPressEnter={() => confirm()}
+              className="mb-2"
+            />
+            <Space size="small">
+              <Button type="primary" onClick={() => confirm()} size="small">
+                Filtrele
+              </Button>
+              <Button
+                onClick={() => {
+                  clearFilters?.();
+                  confirm();
+                }}
+                size="small"
+              >
+                Sıfırla
+              </Button>
+            </Space>
+          </div>
+        ),
         onFilter: (val, record) =>
-          record.email?.toLowerCase().includes(String(val).toLowerCase()),
+          record.email?.toLowerCase().includes(String(val).toLowerCase()) ||
+          record.email?.split('@')[1]?.toLowerCase() === String(val).toLowerCase(),
         render: (value: string) =>
           value ? (
             <Typography.Link href={`mailto:${value}`}>{value}</Typography.Link>
@@ -94,10 +170,38 @@ export function UserTable({
         id: 'company',
         title: 'Şirket',
         dataIndex: ['company', 'name'],
-        filters: companyFilters,
+        filters: companyNameFilters,
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div className="p-2 w-64">
+            <Input
+              allowClear
+              placeholder="Şirket ara"
+              value={selectedKeys[0] as string}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedKeys(val ? [val] : []);
+              }}
+              onPressEnter={() => confirm()}
+              className="mb-2"
+            />
+            <Space size="small">
+              <Button type="primary" onClick={() => confirm()} size="small">
+                Filtrele
+              </Button>
+              <Button
+                onClick={() => {
+                  clearFilters?.();
+                  confirm();
+                }}
+                size="small"
+              >
+                Sıfırla
+              </Button>
+            </Space>
+          </div>
+        ),
         onFilter: (val, record) =>
-          (record.company?.name || '').toLowerCase() ===
-          String(val).toLowerCase(),
+          (record.company?.name || '').toLowerCase().includes(String(val).toLowerCase()),
         render: (value: string | undefined) =>
           value ? <Tag color="blue">{value}</Tag> : '-',
       },
@@ -105,6 +209,44 @@ export function UserTable({
         id: 'website',
         title: 'Website',
         dataIndex: 'website',
+        filters: websiteDomainFilters,
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <div className="p-2 w-64">
+            <Input
+              allowClear
+              placeholder="Website ara veya domain"
+              value={selectedKeys[0] as string}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedKeys(val ? [val] : []);
+              }}
+              onPressEnter={() => confirm()}
+              className="mb-2"
+            />
+            <Space size="small">
+              <Button type="primary" onClick={() => confirm()} size="small">
+                Filtrele
+              </Button>
+              <Button
+                onClick={() => {
+                  clearFilters?.();
+                  confirm();
+                }}
+                size="small"
+              >
+                Sıfırla
+              </Button>
+            </Space>
+          </div>
+        ),
+        onFilter: (val, record) => {
+          const site = record.website || '';
+          const domain = site.replace(/^https?:\/\//, '');
+          return (
+            site.toLowerCase().includes(String(val).toLowerCase()) ||
+            domain.toLowerCase().includes(String(val).toLowerCase())
+          );
+        },
         render: (value: string | undefined) =>
           value ? (
             <Typography.Link href={`https://${value}`} target="_blank">

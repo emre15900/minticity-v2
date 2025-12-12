@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Checkbox,
   Divider,
+  Slider,
   Popover,
   Segmented,
   Space,
@@ -51,14 +52,46 @@ export function DynamicTable<T extends object>({
   const [tableSize, setTableSize] = useState<TableProps['size']>('middle');
   const { visibleColumns, hiddenIds, toggleColumn, resetColumns } =
     useDynamicColumns(columns, storageKey);
+  const [columnWidths, setColumnWidths] = useState<Record<string, number>>(() =>
+    Object.fromEntries(
+      columns.map((col) => [col.id, typeof col.width === 'number' ? col.width : 180]),
+    ),
+  );
+
+  useEffect(() => {
+    setColumnWidths((prev) => {
+      const next = { ...prev };
+      columns.forEach((col) => {
+        if (next[col.id] === undefined) {
+          next[col.id] = typeof col.width === 'number' ? col.width : 180;
+        }
+      });
+      return next;
+    });
+  }, [columns]);
+
+  const handleWidthChange = (id: string, value: number) => {
+    setColumnWidths((prev) => ({ ...prev, [id]: Math.max(120, Math.min(420, value)) }));
+  };
 
   const preparedColumns = useMemo(
     () =>
       visibleColumns.map((col) => ({
         ellipsis: true,
+        width: columnWidths[col.id],
+        key: col.id,
         ...col,
       })),
-    [visibleColumns],
+    [visibleColumns, columnWidths],
+  );
+
+  const totalWidth = useMemo(
+    () =>
+      preparedColumns.reduce((sum, col) => {
+        const w = typeof col.width === 'number' ? col.width : 180;
+        return sum + w;
+      }, 0),
+    [preparedColumns],
   );
 
   const paginationProps: PaginationProps | false = pagination
@@ -109,14 +142,22 @@ export function DynamicTable<T extends object>({
                 </div>
                 <Divider className="my-1" />
                 {columns.map((col) => (
-                  <Checkbox
-                    key={col.id}
-                    checked={!hiddenIds.includes(col.id)}
-                    disabled={col.lockVisibility}
-                    onChange={(e) => toggleColumn(col.id, e.target.checked)}
-                  >
-                    {col.title as string}
-                  </Checkbox>
+                  <div key={col.id} className="flex flex-col gap-1">
+                    <Checkbox
+                      checked={!hiddenIds.includes(col.id)}
+                      disabled={col.lockVisibility}
+                      onChange={(e) => toggleColumn(col.id, e.target.checked)}
+                    >
+                      {col.title as string}
+                    </Checkbox>
+                    <Slider
+                      min={120}
+                      max={420}
+                      value={columnWidths[col.id]}
+                      onChange={(value) => handleWidthChange(col.id, value as number)}
+                      disabled={col.lockVisibility}
+                    />
+                  </div>
                 ))}
               </div>
             }
@@ -137,7 +178,11 @@ export function DynamicTable<T extends object>({
           dataSource={data}
           loading={loading}
           pagination={paginationProps}
-          scroll={scroll}
+          scroll={
+            scroll
+              ? { ...scroll, x: scroll.x ?? totalWidth }
+              : { x: totalWidth }
+          }
           onChange={onChange}
           onRow={
             onRowClick
