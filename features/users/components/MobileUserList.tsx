@@ -108,6 +108,6 @@ export function MobileUserList({
           },
         ];
 
-  return <Collapse accordion items={items} />;
+  return <Collapse accordion items={items} className="mobile-user-collapse" />;
 }
 

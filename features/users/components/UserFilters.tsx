@@ -41,7 +41,7 @@ export function UserFilters({
         placeholder="İsim, kullanıcı adı veya e-posta ara"
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="sm:max-w-xl"
+        className="sm:max-w-xl search-input"
       />
       <Space wrap>
         <Tooltip title="Liste modu">

@@ -3,28 +3,33 @@
 @tailwind utilities;
 
 :root {
-  --background: #f5f7fb;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --border: #e2e8f0;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-  color-scheme: light;
+  --background: #0a1224;
+  --foreground: #e6edff;
+  --card: #0f1c36;
+  --border: #1f2b46;
+  --shadow: 0 22px 70px rgba(5, 12, 28, 0.55);
+  color-scheme: dark;
 }
 
 :root[data-theme='dark'] {
-  --background: #0b1221;
-  --foreground: #e2e8f0;
-  --card: #0f172a;
-  --border: #1e293b;
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  --background: #050b18;
+  --foreground: #e6edff;
+  --card: #0b152d;
+  --border: #1a2642;
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.65);
   color-scheme: dark;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background:
+    radial-gradient(circle at 18% 20%, rgba(56, 189, 248, 0.14), transparent 28%),
+    radial-gradient(circle at 82% 8%, rgba(99, 102, 241, 0.12), transparent 24%),
+    radial-gradient(circle at 45% 92%, rgba(14, 165, 233, 0.1), transparent 32%),
+    linear-gradient(135deg, #050b18 0%, #0b1936 42%, #050b18 100%);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   transition: background-color 0.25s ease, color 0.25s ease;
+  min-height: 100vh;
 }
 
 a {
@@ -32,8 +37,103 @@ a {
 }
 
 .card-like {
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  background: linear-gradient(150deg, rgba(16, 30, 58, 0.9), rgba(7, 13, 27, 0.92));
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  box-shadow: 0 24px 70px rgba(5, 12, 28, 0.55);
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.glass-card {
+  background: linear-gradient(150deg, rgba(15, 30, 60, 0.94), rgba(7, 14, 30, 0.96));
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  box-shadow: 0 28px 80px rgba(5, 12, 28, 0.65);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 24px 18px 48px;
+}
+
+.search-input .ant-input-affix-wrapper {
+  background: rgba(9, 18, 36, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  color: #e6edff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(5, 12, 28, 0.35);
+}
+
+.search-input .ant-input-affix-wrapper:hover,
+.search-input .ant-input-affix-wrapper:focus-within {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.18);
+}
+
+.search-input .ant-input-prefix,
+.search-input .ant-input {
+  color: #e6edff;
+}
+
+.themed-table {
+  color: #dfe8ff;
+}
+
+.themed-table .ant-table {
+  background: transparent;
+}
+
+.themed-table .ant-table-container {
+  background: linear-gradient(180deg, rgba(14, 26, 50, 0.92), rgba(7, 14, 30, 0.9));
+  border: 1px solid rgba(31, 43, 70, 0.9);
   border-radius: 14px;
+  overflow: hidden;
+}
+
+.themed-table .ant-table-thead > tr > th {
+  background: rgba(17, 30, 56, 0.95) !important;
+  color: #e6edff;
+  border-color: rgba(31, 43, 70, 0.9) !important;
+  font-weight: 700;
+}
+
+.themed-table .ant-table-tbody > tr > td {
+  background: rgba(9, 18, 36, 0.92);
+  border-color: rgba(31, 43, 70, 0.9);
+  color: #dbe8ff;
+}
+
+.themed-table .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: rgba(30, 69, 130, 0.55) !important;
+}
+
+.themed-table .ant-pagination {
+  margin: 12px 16px 16px;
+}
+
+.ant-segmented {
+  background: rgba(15, 28, 54, 0.92);
+  border: 1px solid rgba(31, 43, 70, 0.85);
+  box-shadow: 0 12px 36px rgba(5, 12, 28, 0.45);
+}
+
+.ant-segmented-item-selected {
+  background: #1d4ed8 !important;
+  color: #e6edff !important;
+}
+
+.mobile-user-collapse .ant-collapse-item {
+  border-color: rgba(31, 43, 70, 0.9);
+  background: rgba(9, 18, 36, 0.9);
+}
+
+.mobile-user-collapse .ant-collapse-header {
+  color: #e6edff;
+  background: rgba(15, 28, 54, 0.92);
+}
+
+.mobile-user-collapse .ant-collapse-content {
+  background: rgba(7, 14, 30, 0.9);
 }

@@ -110,10 +110,12 @@ export function DynamicTable<T extends object>({
     : false;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      <div className="flex flex-col gap-3 border-b border-slate-100 p-3 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
-        <Space wrap>{toolbar}</Space>
-        <Space className='flex items-center gap-2 justify-between w-full'>
+    <div className="rounded-2xl border border-[#1f2b46] bg-gradient-to-br from-[#0f162d] via-[#0c1226] to-[#0a0f22] shadow-[0_20px_60px_rgba(5,12,28,0.6)]">
+      <div className="flex flex-col gap-3 border-b border-[#1f2b46] bg-gradient-to-r from-[#111c35]/70 to-[#0c1426]/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+        <Space wrap className="text-slate-100">
+          {toolbar}
+        </Space>
+        <Space className="flex w-full items-center justify-between gap-2">
           <Tooltip title="Yoğunluk">
             <Segmented
               size="small"
@@ -172,6 +174,7 @@ export function DynamicTable<T extends object>({
         transition={{ duration: 0.3 }}
       >
         <Table<T>
+          className="themed-table"
           size={tableSize}
           rowKey={rowKey}
           columns={preparedColumns}

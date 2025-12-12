@@ -142,7 +142,8 @@ export function UsersPage() {
   const isInitialLoading = loading && !list.length;
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-4 p-6 md:p-10">
+    <div className="page-shell flex justify-center">
+      <div className="flex w-full max-w-6xl flex-col gap-4 p-2 md:p-4">
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -160,7 +161,7 @@ export function UsersPage() {
         </Space>
       </motion.div>
 
-      <Card className="card-like">
+      <Card className="glass-card">
         <UserFilters
           search={search}
           onSearchChange={setSearch}
@@ -267,6 +268,7 @@ export function UsersPage() {
         onSubmit={handleUpdate}
         onClose={() => setEditUser(undefined)}
       />
+      </div>
     </div>
   );
 }
