@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { message } from 'antd';
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE ?? 'https://jsonplaceholder.typicode.com';
+import { getApiBaseUrl } from '@/lib/config/env';
 
 export const apiClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
