@@ -18,7 +18,6 @@ import {
   readLocalUsers,
   removeLocalUser,
   writeLocalUsers,
-  upsertLocalUser,
 } from '@/lib/storage/userStorage';
 
 const nextLocalId = (users: User[]) => {
@@ -224,7 +223,7 @@ const usersSlice = createSlice({
         } else {
           state.list = [userWithAvatar, ...state.list];
         }
-        writeLocalUsers(upsertLocalUser(userWithAvatar));
+        writeLocalUsers(state.list);
       })
       .addCase(createUserThunk.rejected, (state, action) => {
         state.creating = false;
@@ -252,7 +251,7 @@ const usersSlice = createSlice({
         } else {
           state.list.push(userWithAvatar);
         }
-        writeLocalUsers(upsertLocalUser(userWithAvatar));
+        writeLocalUsers(state.list);
       })
       .addCase(updateUserThunk.rejected, (state, action) => {
         state.updating = false;
@@ -270,6 +269,7 @@ const usersSlice = createSlice({
         state.avatarMap = removeAvatar(action.payload);
         state.list = state.list.filter((user) => user.id !== action.payload);
         removeLocalUser(action.payload);
+        writeLocalUsers(state.list);
       })
       .addCase(deleteUserThunk.rejected, (state, action) => {
         state.deletingIds = state.deletingIds.filter(
