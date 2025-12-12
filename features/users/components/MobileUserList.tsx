@@ -29,15 +29,17 @@ export function MobileUserList({
           label: (
             <Space align="center">
               <UserAvatar name={user.name} avatarUrl={user.avatarUrl} />
-              <div>
+              <div className="flex flex-col leading-tight">
                 <Typography.Text strong className="block">
                   {user.name || '-'}
                 </Typography.Text>
-                <Typography.Text type="secondary">
+                <Typography.Text type="secondary" className="block text-xs">
                   @{user.username || '-'}
                 </Typography.Text>
+                <Typography.Text type="secondary" className="block text-xs">
+                  {user.company?.name || '-'}
+                </Typography.Text>
               </div>
-              {user.company?.name && <Tag color="blue">{user.company.name}</Tag>}
             </Space>
           ),
           children: (
@@ -108,6 +110,13 @@ export function MobileUserList({
           },
         ];
 
-  return <Collapse accordion items={items} className="mobile-user-collapse" />;
+  return (
+    <Collapse
+      accordion
+      items={items}
+      className="mobile-user-collapse"
+      expandIconPlacement="end"
+    />
+  );
 }
 
