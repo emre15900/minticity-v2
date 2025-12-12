@@ -80,7 +80,20 @@ export function DynamicTable<T extends object>({
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-col gap-3 border-b border-slate-100 p-3 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
         <Space wrap>{toolbar}</Space>
-        <Space>
+        <Space className='flex items-center gap-2 justify-between w-full'>
+          <Tooltip title="Yoğunluk">
+            <Segmented
+              size="small"
+              value={tableSize}
+              onChange={(val) => setTableSize(val as TableProps['size'])}
+              options={[
+                { value: 'small', label: <FiType className="mt-1" /> },
+                { value: 'middle', label: 'M' },
+                { value: 'large', label: 'L' },
+              ]}
+            />
+          </Tooltip>
+
           <Popover
             trigger="click"
             placement="bottomRight"
@@ -110,18 +123,6 @@ export function DynamicTable<T extends object>({
           >
             <Button icon={<FiColumns />} />
           </Popover>
-          <Tooltip title="Yoğunluk">
-            <Segmented
-              size="small"
-              value={tableSize}
-              onChange={(val) => setTableSize(val as TableProps['size'])}
-              options={[
-                { value: 'small', label: <FiType /> },
-                { value: 'middle', label: 'M' },
-                { value: 'large', label: 'L' },
-              ]}
-            />
-          </Tooltip>
         </Space>
       </div>
       <motion.div
