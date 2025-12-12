@@ -57,7 +57,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 pt-4 pr-10">
+          <div className="mx-auto flex max-w-6xl flex-col gap-4 pt-4 pr-2" style={{marginBottom: "-4rem"}}>
             <Space align="center" className="justify-end w-full" wrap>
               <div>
                 <ThemeToggle />

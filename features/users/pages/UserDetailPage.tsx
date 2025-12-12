@@ -86,7 +86,7 @@ export function UserDetailPage() {
         onDirtyChange={setDirty}
         footer={
           <Typography.Text type="secondary">
-           
+
           </Typography.Text>
         }
       />
@@ -101,10 +101,10 @@ export function UserDetailPage() {
         transition={{ duration: 0.25 }}
       >
         <Space size="middle" align="center">
-          <Button icon={<FiArrowLeft />} onClick={handleBack} type="text">
-            Listeye dön
-          </Button>
           <div>
+            <Button icon={<FiArrowLeft />} onClick={handleBack} className='border-solid border-1 border-slate-300 rounded-full p-3 mb-2' type="text">
+              Listeye dön
+            </Button>
             <Typography.Title level={2} className="!mb-1">
               Kullanıcı Detayı
             </Typography.Title>

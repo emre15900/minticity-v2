@@ -21,20 +21,30 @@ function AntThemeWrapper({ children }: { children: ReactNode }) {
 
   const customTheme = useMemo(() => {
     const isDark = theme === 'dark';
-    const palette = {
-      background: isDark ? '#050b18' : '#0b1730',
-      surface: isDark ? '#0c172e' : '#0f1f3d',
-      border: '#1f2b46',
-      text: '#e6edff',
-      textSecondary: '#9fb5e8',
-    };
+    const palette = isDark
+      ? {
+          background: '#050b18',
+          surface: '#0c172e',
+          border: '#1f2b46',
+          text: '#e6edff',
+          textSecondary: '#9fb5e8',
+          fill: '#0f1f3c',
+        }
+      : {
+          background: '#f9fbff',
+          surface: '#ffffff',
+          border: '#e5e7eb',
+          text: '#0f172a',
+          textSecondary: '#475569',
+          fill: '#f5f0ff',
+        };
 
     return {
       algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
       token: {
-        colorPrimary: '#38bdf8',
-        colorPrimaryHover: '#60a5fa',
-        colorPrimaryActive: '#0ea5e9',
+        colorPrimary: isDark ? '#38bdf8' : '#ec4899',
+        colorPrimaryHover: isDark ? '#60a5fa' : '#f472b6',
+        colorPrimaryActive: isDark ? '#0ea5e9' : '#db2777',
         colorBgBase: palette.background,
         colorBgContainer: palette.surface,
         colorBgElevated: palette.surface,
@@ -43,10 +53,10 @@ function AntThemeWrapper({ children }: { children: ReactNode }) {
         colorText: palette.text,
         colorTextBase: palette.text,
         colorTextSecondary: palette.textSecondary,
-        colorTextTertiary: '#7aa5ff',
-        colorFillAlter: '#0f1f3c',
-        controlItemBgHover: 'rgba(56, 189, 248, 0.15)',
-        controlOutline: 'rgba(56, 189, 248, 0.35)',
+        colorTextTertiary: isDark ? '#7aa5ff' : '#a855f7',
+        colorFillAlter: palette.fill,
+        controlItemBgHover: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(236, 72, 153, 0.12)',
+        controlOutline: isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(236, 72, 153, 0.28)',
         borderRadius: 12,
         wireframe: false,
       },

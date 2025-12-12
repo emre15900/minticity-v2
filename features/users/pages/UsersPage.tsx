@@ -143,7 +143,7 @@ export function UsersPage() {
 
   return (
     <div className="page-shell flex justify-center">
-      <div className="flex w-full max-w-6xl flex-col gap-4 p-2 md:p-4">
+      <div className="flex w-full max-w-6xl flex-col gap-4 p-2">
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

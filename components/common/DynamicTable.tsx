@@ -110,9 +110,9 @@ export function DynamicTable<T extends object>({
     : false;
 
   return (
-    <div className="rounded-2xl border border-[#1f2b46] bg-gradient-to-br from-[#0f162d] via-[#0c1226] to-[#0a0f22] shadow-[0_20px_60px_rgba(5,12,28,0.6)]">
-      <div className="flex flex-col gap-3 border-b border-[#1f2b46] bg-gradient-to-r from-[#111c35]/70 to-[#0c1426]/70 p-3 sm:flex-row sm:items-center sm:justify-between">
-        <Space wrap className="text-slate-100">
+    <div className="themed-surface">
+      <div className="themed-surface-header flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
+        <Space wrap className="themed-toolbar">
           {toolbar}
         </Space>
         <Space className="flex w-full items-center justify-between gap-2">
