@@ -19,7 +19,6 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiColumns,
-  FiRefreshCw,
   FiType,
 } from 'react-icons/fi';
 import { DynamicColumn, useDynamicColumns } from '@/lib/hooks/useDynamicColumns';
@@ -35,7 +34,6 @@ type DynamicTableProps<T> = {
   toolbar?: React.ReactNode;
   storageKey?: string;
   scroll?: TableProps<T>['scroll'];
-  onRefresh?: () => void;
 };
 
 export function DynamicTable<T extends object>({
@@ -49,7 +47,6 @@ export function DynamicTable<T extends object>({
   toolbar,
   storageKey,
   scroll,
-  onRefresh,
 }: DynamicTableProps<T>) {
   const [tableSize, setTableSize] = useState<TableProps['size']>('middle');
   const { visibleColumns, hiddenIds, toggleColumn, resetColumns } =
@@ -69,8 +66,11 @@ export function DynamicTable<T extends object>({
         ...pagination,
         showSizeChanger: pagination.showSizeChanger ?? true,
         itemRender: (page, type, original) => {
-          if (type === 'prev') return <FiChevronLeft />;
-          if (type === 'next') return <FiChevronRight />;
+          const wrapper = (icon: React.ReactNode) => (
+            <span className="flex h-6 w-6 items-center justify-center">{icon}</span>
+          );
+          if (type === 'prev') return wrapper(<FiChevronLeft />);
+          if (type === 'next') return wrapper(<FiChevronRight />);
           return original;
         },
       }
@@ -120,13 +120,6 @@ export function DynamicTable<T extends object>({
                 { value: 'middle', label: 'M' },
                 { value: 'large', label: 'L' },
               ]}
-            />
-          </Tooltip>
-          <Tooltip title="Tabloyu yenile">
-            <Button
-              icon={<FiRefreshCw />}
-            onClick={() => onRefresh?.()}
-            disabled={!onRefresh}
             />
           </Tooltip>
         </Space>

@@ -24,7 +24,6 @@ type Props = {
   onEdit: (user: User) => void;
   onDelete: (user: User) => void;
   onDetail: (user: User) => void;
-  onRefresh?: () => void;
 };
 
 export function UserTable({
@@ -37,7 +36,6 @@ export function UserTable({
   onEdit,
   onDelete,
   onDetail,
-  onRefresh,
 }: Props) {
   const companyFilters = useMemo(
     () =>
@@ -194,7 +192,6 @@ export function UserTable({
       onRowClick={onDetail}
       storageKey="users-table"
       scroll={{ x: 1100 }}
-      onRefresh={onRefresh}
     />
   );
 }

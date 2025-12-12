@@ -7,6 +7,7 @@ import {
   FiRefreshCw,
   FiShuffle,
   FiSearch,
+  FiXCircle,
 } from 'react-icons/fi';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { UserListMode } from '@/features/users/types/user';
@@ -19,6 +20,7 @@ type Props = {
   mode: UserListMode;
   onModeChange: (mode: UserListMode) => void;
   onOpenCreate: () => void;
+  onResetFilters: () => void;
 };
 
 export function UserFilters({
@@ -29,6 +31,7 @@ export function UserFilters({
   mode,
   onModeChange,
   onOpenCreate,
+  onResetFilters,
 }: Props) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -71,6 +74,13 @@ export function UserFilters({
             icon={<FiRefreshCw />}
             onClick={onRefresh}
             loading={loading}
+            type="default"
+          />
+        </Tooltip>
+        <Tooltip title="Filtreleri temizle">
+          <Button
+            icon={<FiXCircle />}
+            onClick={onResetFilters}
             type="default"
           />
         </Tooltip>

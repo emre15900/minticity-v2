@@ -10,13 +10,14 @@ type ThemeContextValue = {
   setTheme: (theme: Theme) => void;
 };
 
+const STORAGE_KEY = 'akilli-ticaret:theme';
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme') as Theme | null;
+    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     setTheme(stored ?? (prefersDark ? 'dark' : 'light'));
   }, []);
@@ -25,7 +26,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     root.dataset.theme = theme;
     root.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('theme', theme);
+    localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 
   const value = useMemo(

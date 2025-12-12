@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import 'antd/dist/reset.css';
 import './globals.css';
 import { Providers } from '@/app/providers';
@@ -26,8 +27,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const themeInitScript = `
+    (function() {
+      var storageKey = 'akilli-ticaret:theme';
+      var classList = document.documentElement.classList;
+      var stored = null;
+      try {
+        stored = localStorage.getItem(storageKey);
+      } catch (err) {}
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
+      classList.remove('light','dark');
+      classList.add(theme);
+      document.documentElement.style.colorScheme = theme;
+    })();
+  `;
+
   return (
     <html lang="tr">
+      <head>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInitScript}
+        </Script>
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>
