@@ -47,8 +47,22 @@ export function UserFilters({
             value={mode}
             onChange={(val) => onModeChange(val as UserListMode)}
             options={[
-              { value: 'pagination', label: <FiList /> },
-              { value: 'infinite', label: <FiShuffle /> },
+              {
+                value: 'pagination',
+                label: (
+                  <span className="flex h-6 w-6 items-center justify-center">
+                    <FiList />
+                  </span>
+                ),
+              },
+              {
+                value: 'infinite',
+                label: (
+                  <span className="flex h-6 w-6 items-center justify-center">
+                    <FiShuffle />
+                  </span>
+                ),
+              },
             ]}
           />
         </Tooltip>

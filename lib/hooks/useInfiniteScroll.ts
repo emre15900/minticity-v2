@@ -1,6 +1,6 @@
 'use client';
 
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
 type Options = {
   batchSize?: number;
@@ -62,10 +62,10 @@ export function useInfiniteScroll<T>(
     };
   }, [enabled, hasMore, items, visibleItems.length, batchSize, loadingMore, root]);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setVisibleItems(items.slice(0, batchSize));
     setHasMore(items.length > batchSize);
-  };
+  }, [items, batchSize]);
 
   return { visibleItems, hasMore, loadingMore, loadMoreRef, reset };
 }
